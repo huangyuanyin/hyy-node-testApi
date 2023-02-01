@@ -13,9 +13,9 @@ exports.regUer = (req, res) => {
   // 获取客户端提交到服务器的用户信息
   const userInfo = req.body
   // 对表单中的数据进行合法性的校验
-  if (!userInfo.username || !userInfo.password) {
-    return res.send({ status: 1, message: '用户名或密码不合法' })
-  }
+  // if (!userInfo.username || !userInfo.password) {
+  //   return res.send({ status: 1, message: '用户名或密码不合法' })
+  // }
   console.log('注册表单', userInfo)
 
   // 定义sql语句 - 查询用户名是否被占用
@@ -49,7 +49,8 @@ exports.regUer = (req, res) => {
         return res.cc('注册用户失败，请稍后再试！')
       }
       // 注册用户成功
-      res.send({ status: 0, message: '注册成功！' })
+      // res.send({ status: 0, message: '注册成功！' })
+      res.cc('注册成功！', 0)
     })
   })
 }
