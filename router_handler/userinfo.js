@@ -17,3 +17,16 @@ exports.getUserInfo = (req, res) => {
     })
   })
 }
+
+// 更新用户基本信息的处理函数
+exports.updateUserInfo = (req, res) => {
+  const sql = `update users set ? where id =?`
+  db.query(sql, [req.body, req.body.id], (err, results) => {
+    // 1.执行sql语句失败
+    if (err) return res.cc(err)
+    // 2.执行sql语句成功，但是影响行数不为1
+    if (results.affectedRows !== 1) return res.cc('更新用户基本信息失败！')
+    // 3.修改用户信息成功
+    return res.cc('更新用户基本信息成功!', 0)
+  })
+}
