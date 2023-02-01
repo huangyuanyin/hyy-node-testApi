@@ -18,6 +18,7 @@ exports.getArticleCates = (req, res) => {
   })
 }
 
+// 添加文章分类的处理函数
 exports.addArticleCates = (req, res) => {
   const sql = `select * from article_cate where name=? or alias=?`
   db.query(sql, [req.body.name, req.body.alias], (err, results) => {
@@ -42,13 +43,30 @@ exports.addArticleCates = (req, res) => {
   })
 }
 
+// 根据ID删除文章分类的处理函数
 exports.deleteCateById = (req, res) => {
   const sql = `update article_cate set is_delete=1 where id=?`
   db.query(sql, req.params.id, (err, results) => {
     if (err) return res.cc(err)
-    // SQL 语句执行成功，但是影响行数不等于 1
+    // SQL语句执行成功，但是影响行数不等于 1
     if (results.affectedRows !== 1) return res.cc('删除文章分类失败！')
     // 删除文章分类成功
     res.cc('删除文章分类成功！', 0)
+  })
+}
+
+// 根据Id获取文章分类的处理函数
+exports.getArtCateById = (req, res) => {
+  const sql = `select * from article_cate where id=?`
+  db.query(sql, req.params.id, (err, results) => {
+    if (err) return res.cc(err)
+    // SQL语句执行成功，但是没有查询到任何数据
+    if (results.length !== 1) return res.cc('获取文章分类数据失败！')
+    // 把数据响应给客户端
+    res.send({
+      status: 0,
+      message: '获取文章分类数据成功！',
+      data: results[0]
+    })
   })
 }
