@@ -4,6 +4,11 @@ const db = require('../db/index')
 // bcryptjs - 密码加密
 const bcrypt = require('bcryptjs')
 
+// 导入jsonwebtoken包 - 用于生成token字符串
+const jwt = require('jsonwebtoken')
+// 导入全局的配置文件
+const config = require('../config')
+
 /**
  * 在这里定义和用户相关的路由处理函数，供 /router/user.js 模块进行调用
  */
@@ -57,5 +62,27 @@ exports.regUer = (req, res) => {
 
 // 登录的处理函数
 exports.login = (req, res) => {
-  res.send('login ok')
+  const userInfo = req.body
+  const sql = 'select * from users where username=?'
+  db.query(sql, userInfo.username, (err, results) => {
+    if (err) return res.cc(err)
+    // 执行sql语句成功，但是获取到的数据条数不等于1
+    if (results.length !== 1) return res.cc('登录失败！')
+    // 判断密码是否正确
+    // 1.拿着用户输入的密码，和数据库中存储的密码进行对比
+    const compareResult = bcrypt.compareSync(userInfo.password, results[0].password)
+    // 2.如果对比的结果等于false，则证明用户输入的密码错误
+    if (!compareResult) return res.cc('登录失败！')
+    // 登录成功，生成token
+    // 1.剔除头像和密码，user中只保留了用户的id,username,nickname,email这四个属性的值
+    const user = { ...results[0], password: null, user_pic: null }
+    // 2.对用户的信息进行加密，生成Token字符串
+    const tokenStr = jwt.sign(user, config.jwtSecretKey, { expiresIn: config.expiresIn })
+    // 3.调用res.send() 将Token响应给客服端
+    res.send({
+      status: 0,
+      message: '登录成功！',
+      token: 'Bearer' + tokenStr
+    })
+  })
 }
