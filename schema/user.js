@@ -45,3 +45,17 @@ exports.update_userinfo_schema = {
     email: user_email
   }
 }
+
+// 重置密码的验证规则对象
+exports.update_password_schema = {
+  // 表示需要对 req.body 中的数据进行验证
+  body: {
+    oldPwd: password, // 使用password这个规则，验证req.body.oldPwd的值
+    // 使用joi.not(joi.ref('oldPwd')).concat(password)规则，验证req.body.newPwd的值
+    // 解读：
+    // 1.joi.ref('oldPwd') 表示newPwd的值必须和oldPwd的值保持一致
+    // 2.joi.not(joi.ref('oldPwd')) 表示 newPwd 的值不能等于 oldPwd 的值
+    // 3..concat()用于合并joi.not(joi.ref('oldPwd')) 和 password 这两条验证规则
+    newPwd: joi.not(joi.ref('oldPwd')).concat(password)
+  }
+}
