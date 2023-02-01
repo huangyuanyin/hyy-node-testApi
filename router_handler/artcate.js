@@ -41,3 +41,14 @@ exports.addArticleCates = (req, res) => {
     })
   })
 }
+
+exports.deleteCateById = (req, res) => {
+  const sql = `update article_cate set is_delete=1 where id=?`
+  db.query(sql, req.params.id, (err, results) => {
+    if (err) return res.cc(err)
+    // SQL 语句执行成功，但是影响行数不等于 1
+    if (results.affectedRows !== 1) return res.cc('删除文章分类失败！')
+    // 删除文章分类成功
+    res.cc('删除文章分类成功！', 0)
+  })
+}
