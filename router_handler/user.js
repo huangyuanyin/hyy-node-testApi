@@ -82,7 +82,7 @@ exports.login = (req, res) => {
     res.send({
       status: 0,
       message: '登录成功！',
-      token: 'Bearer' + tokenStr
+      token: 'Bearer ' + tokenStr
     })
   })
 }
