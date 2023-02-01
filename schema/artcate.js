@@ -29,3 +29,12 @@ exports.get_cate_schema = {
     id
   }
 }
+
+// 更新分类的校验规则
+exports.update_cate_schema = {
+  body: {
+    id,
+    name,
+    alias
+  }
+}
